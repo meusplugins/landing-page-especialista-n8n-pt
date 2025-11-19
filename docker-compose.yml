@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  especialista:
+    image: nuzzlabs1/especialista:latest     # ← sua imagem já buildada e enviada ao Docker Hub
+    networks:
+      - NetNuzz
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.especialista.rule=Host(`especialista.nuzz.com.br`)"
+        - "traefik.http.routers.especialista.entrypoints=web"
+        - "traefik.http.services.especialista.loadbalancer.server.port=4173"
+
+networks:
+  NetNuzz:
+    external: true
