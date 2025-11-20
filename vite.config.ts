@@ -9,6 +9,11 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
+      preview: {
+        port: 4173,
+        host: '0.0.0.0',
+        allowedHosts: ['especialista.nuzz.com.br'], // 👈 LIBERA O DOMÍNIO
+      },
       plugins: [react()],
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
