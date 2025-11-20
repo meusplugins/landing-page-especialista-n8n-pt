@@ -1,18 +1,29 @@
 version: "3.8"
 
 services:
-  especialista:
-    image: nuzzlabs1/especialista:latest     # ← sua imagem já buildada e enviada ao Docker Hub
+  lovable:
+    image: nuzzlabs1/especialista:latest
     networks:
       - NetNuzz
     deploy:
       replicas: 1
       labels:
         - "traefik.enable=true"
+        # define o host que o Traefik deve rotear
         - "traefik.http.routers.especialista.rule=Host(`especialista.nuzz.com.br`)"
-        - "traefik.http.routers.especialista.entrypoints=web"
+        # se quiser redirecionar HTTP → HTTPS, crie também:
+        - "traefik.http.routers.especialista.entrypoints=websecure"
+        - "traefik.http.routers.especialista.tls.certresolver=letsencryptresolver"
+        # opcional: forçar prioridade se tiver vários routers
+        - "traefik.http.routers.especialista.priority=10"
+        # serviço a que o Traefik deve encaminhar
+        - "traefik.http.routers.especialista.service=especialista"
+        # porta interna do container
         - "traefik.http.services.especialista.loadbalancer.server.port=4173"
+        # preserva o host original (útil para Single-Page Apps)
+        - "traefik.http.services.especialista.loadbalancer.passHostHeader=true"
 
 networks:
   NetNuzz:
     external: true
+    name: NetNuzz
