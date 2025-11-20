@@ -1,13 +1,14 @@
 FROM node:18-alpine AS builder
 WORKDIR /usr/src/app
 
-# Se você usa lockfile, troque npm install por npm ci:
+# 1) Instalar dependências (prod + dev) — sem package-lock, então usamos npm install
 COPY package*.json ./
+RUN npm install --legacy-peer-deps
 
-# Instala com fallback de peer-deps
-RUN npm ci --only=production --legacy-peer-deps
-
+# 2) Copiar código e gerar build
 COPY . .
+RUN npm run build
 
-EXPOSE 3000
-CMD ["npm", "start"]
+# 3) Servir com Vite Preview (ajuste se usar outra coisa)
+EXPOSE 4173
+CMD ["npm", "run", "preview"]
